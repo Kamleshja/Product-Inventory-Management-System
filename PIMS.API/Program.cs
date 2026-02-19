@@ -12,6 +12,8 @@ using System.Text;
 using PIMS.Application.Interfaces;
 using PIMS.Infrastructure.Services;
 using PIMS.API.Middleware;
+using PIMS.Application.Interfaces;
+using PIMS.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>()
