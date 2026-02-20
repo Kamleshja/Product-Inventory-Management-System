@@ -25,5 +25,6 @@ namespace PIMS.Domain.Entities
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 
         public Inventory? Inventory { get; set; }
+        public ICollection<ProductPriceHistory> PriceHistories { get; set; } = new List<ProductPriceHistory>();
     }
 }

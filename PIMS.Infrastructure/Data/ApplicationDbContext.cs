@@ -18,6 +18,7 @@ public class ApplicationDbContext
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
+    public DbSet<ProductPriceHistory> ProductPriceHistories => Set<ProductPriceHistory>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -53,5 +54,6 @@ public class ApplicationDbContext
             .HasOne(t => t.Product)
             .WithMany()
             .HasForeignKey(t => t.ProductId);
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

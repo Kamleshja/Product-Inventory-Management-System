@@ -1,19 +1,21 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using PIMS.Infrastructure.Data;
-using PIMS.Infrastructure.Identity;
-using Serilog;
-using System.Text;
-using PIMS.Application.Interfaces;
-using PIMS.Infrastructure.Services;
 using PIMS.API.Middleware;
 using PIMS.Application.Interfaces;
+using PIMS.Application.Interfaces;
+using PIMS.Infrastructure.Data;
+using PIMS.Infrastructure.Identity;
 using PIMS.Infrastructure.Services;
+using PIMS.Infrastructure.Services;
+using Serilog;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPriceService, PriceService>();
+builder.Services.AddMemoryCache();
 
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>()
@@ -73,7 +77,9 @@ builder.Services.AddAuthorization(options =>
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<
+    PIMS.Application.Validators.Product.UpdateProductPriceValidator>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services
