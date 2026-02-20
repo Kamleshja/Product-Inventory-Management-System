@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PIMS.Application.DTOs.Auth;
 using PIMS.Application.Interfaces;
@@ -22,5 +23,12 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.LoginAsync(request);
         return Ok(result);
+    }
+    [HttpPost("register")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> Register(RegisterRequestDto request)
+    {
+        var response = await _authService.RegisterAsync(request);
+        return Ok(response);
     }
 }

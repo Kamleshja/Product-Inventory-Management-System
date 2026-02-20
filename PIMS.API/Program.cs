@@ -74,6 +74,7 @@ builder.Services.AddAuthorization(options =>
 
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services
     .AddApiVersioning(options =>

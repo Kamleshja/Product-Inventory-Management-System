@@ -22,14 +22,31 @@ namespace PIMS.API.Middleware
             {
                 await _next(context);
             }
-            catch (BadRequestException ex)
+            catch (Exception ex)
             {
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                _logger.LogError(ex, "Unhandled exception occurred");
+
+                context.Response.ContentType = "application/json";
+
+                var statusCode = ex switch
+                {
+                    BadRequestException => HttpStatusCode.BadRequest,
+                    UnauthorizedAccessException => HttpStatusCode.Forbidden,
+                    _ => HttpStatusCode.InternalServerError
+                };
+
+                context.Response.StatusCode = (int)statusCode;
+
+                var response = new
                 {
                     Success = false,
-                    Message = ex.Message
-                }));
+                    Message = statusCode == HttpStatusCode.InternalServerError
+                        ? "An unexpected error occurred."
+                        : ex.Message
+                };
+
+                var json = JsonSerializer.Serialize(response);
+                await context.Response.WriteAsync(json);
             }
         }
     }
